@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>KAITHAR BY ANN — Private Atelier Console</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23111111'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23FAF8F5'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css?v=kaithar_hero">
+  <style>
+    :root {
+      --admin-bg: #F7F5F0;
+      --admin-card: #FFFFFF;
+      --admin-border: #E8E5DF;
+      --admin-text: #111111;
+      --admin-muted: #76736E;
+      --admin-accent: #2B6E3F;
+    }
+    body.admin-body {
+      background-color: var(--admin-bg);
+      color: var(--admin-text);
+      font-family: var(--font-body, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    .admin-header {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--admin-border);
+      padding: 1.25rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .admin-brand {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .admin-logo {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #111111;
+      text-decoration: none;
+    }
+    .admin-badge {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      background: #111111;
+      color: #FAF8F5;
+    }
+    .admin-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .admin-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #111111;
+      color: #FFFFFF;
+      border: 1px solid #111111;
+      padding: 0.6rem 1.2rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .admin-btn:hover {
+      background: #333333;
+    }
+    .admin-btn-secondary {
+      background: #FFFFFF;
+      color: #111111;
+      border-color: var(--admin-border);
+    }
+    .admin-btn-secondary:hover {
+      background: #F0EDE6;
+    }
+    .admin-container {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 1.5rem 4rem;
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .metric-card {
+      background: var(--admin-card);
+      border: 1px solid var(--admin-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .metric-title {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--admin-muted);
+    }
+    .metric-val {
+      font-size: 2.1rem;
+      font-weight: 600;
+      color: var(--admin-text);
+      letter-spacing: -0.02em;
+    }
+    .metric-sub {
+      font-size: 0.75rem;
+      color: var(--admin-muted);
+    }
+    .progress-bar-wrap {
+      width: 100%;
+      height: 6px;
+      background: #E8E5DF;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: #111111;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+    .admin-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--admin-border);
+      gap: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .admin-tab {
+      padding: 0.8rem 0;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--admin-muted);
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+    }
+    .admin-tab.active {
+      color: #111111;
+      border-bottom-color: #111111;
+    }
+    .table-card {
+      background: #FFFFFF;
+      border: 1px solid var(--admin-border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    .data-table th {
+      background: #FAF8F5;
+      padding: 1rem 1.25rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--admin-muted);
+      border-bottom: 1px solid var(--admin-border);
+    }
+    .data-table td {
+      padding: 1.15rem 1.25rem;
+      font-size: 0.85rem;
+      border-bottom: 1px solid var(--admin-border);
+      vertical-align: middle;
+    }
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+    .edition-tag {
+      display: inline-block;
+      font-weight: 700;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      background: #111111;
+      color: #FFFFFF;
+      letter-spacing: 0.05em;
+    }
+    .status-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .status-confirmed {
+      background: rgba(43, 110, 63, 0.12);
+      color: #2B6E3F;
+    }
+    .status-production {
+      background: rgba(184, 115, 51, 0.15);
+      color: #9c5c24;
+    }
+    .status-dispatched {
+      background: rgba(30, 90, 160, 0.12);
+      color: #1E5AA0;
+    }
+    .auth-gate-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(17, 17, 17, 0.7);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .auth-card {
+      background: #FFFFFF;
+      border-radius: 12px;
+      padding: 2.5rem;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    }
+    .auth-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0.85rem 1rem;
+      border: 1px solid var(--admin-border);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      margin: 1.25rem 0;
+    }
+  </style>
+</head>
+<body class="admin-body">
+
+  <!-- Password Gate (Prompt default: kaithar2026) -->
+  <div class="auth-gate-modal" id="authGate" style="display: none;">
+    <div class="auth-card">
+      <span class="admin-badge" style="margin-bottom: 1rem; display: inline-block;">ATELIER SECURITY</span>
+      <h2 style="margin: 0.5rem 0; font-size: 1.4rem;">Console Authentication</h2>
+      <p style="font-size: 0.82rem; color: var(--admin-muted); margin-bottom: 1rem;">Enter the administrative key for KAITHAR Atelier console.</p>
+      <input type="password" id="authInput" placeholder="Passcode (default: kaithar2026)" class="auth-input">
+      <button type="button" class="admin-btn" style="width: 100%; justify-content: center;" onclick="verifyKey()">ACCESS CONSOLE →</button>
+      <p id="authError" style="color: #c02b2b; font-size: 0.75rem; margin-top: 0.75rem; display: none;">Invalid Passcode</p>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="admin-header">
+    <div class="admin-brand">
+      <a href="index.html" class="admin-logo">KAITHAR</a>
+      <span class="admin-badge">ATELIER CONSOLE</span>
+    </div>
+    <div class="admin-actions">
+      <a href="index.html" class="admin-btn admin-btn-secondary">← VIEW STOREFRONT</a>
+      <a href="cart.html" class="admin-btn admin-btn-secondary">VIEW BAG</a>
+      <button type="button" class="admin-btn" onclick="exportCSV()">EXPORT CSV (COURIER) ↓</button>
+    </div>
+  </header>
+
+  <main class="admin-container">
+    
+    <!-- Metrics Section -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <span class="metric-title">TOTAL ALLOTMENT</span>
+        <span class="metric-val" id="metricTotal">40</span>
+        <span class="metric-sub">Strictly limited inaugural edition</span>
+      </div>
+
+      <div class="metric-card">
+        <span class="metric-title">ALLOCATED PIECES</span>
+        <span class="metric-val" id="metricAllocated">0</span>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="metricProgress"></div>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <span class="metric-title">REMAINING ALLOTMENT</span>
+        <span class="metric-val" id="metricRemaining" style="color: #2B6E3F;">40</span>
+        <span class="metric-sub">Available units worldwide</span>
+      </div>
+
+      <div class="metric-card">
+        <span class="metric-title">TOTAL ALLOTMENT VALUE</span>
+        <span class="metric-val" id="metricRevenue">₹0</span>
+        <span class="metric-sub">INR (Taxes & courier inclusive)</span>
+      </div>
+
+      <div class="metric-card">
+        <span class="metric-title">REGISTERED PATRONS</span>
+        <span class="metric-val" id="metricSubscribers">0</span>
+        <span class="metric-sub">VIP waitlist & invitations</span>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="admin-tabs">
+      <button type="button" class="admin-tab active" onclick="switchTab('reservations')">Numbered Allotments (<span id="countReservations">0</span>)</button>
+      <button type="button" class="admin-tab" onclick="switchTab('invitations')">Private Invitations (<span id="countInvitations">0</span>)</button>
+      <button type="button" class="admin-tab" onclick="switchTab('subscribers')">VIP Subscribers (<span id="countSubscribers">0</span>)</button>
+    </div>
+
+    <!-- Tab 1: Reservations Table -->
+    <div id="tabReservations" class="table-card">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>SERIAL</th>
+            <th>CERTIFICATE</th>
+            <th>PATRON</th>
+            <th>DELIVERY ADDRESS</th>
+            <th>AMOUNT</th>
+            <th>STATUS</th>
+            <th>ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody id="reservationsBody">
+          <tr>
+            <td colspan="7" style="text-align: center; color: var(--admin-muted); padding: 3rem;">Loading atelier reservations...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Tab 2: Invitations Table -->
+    <div id="tabInvitations" class="table-card" style="display: none;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>PATRON NAME</th>
+            <th>EMAIL</th>
+            <th>PIECE OF INTEREST</th>
+            <th>DATE REGISTERED</th>
+          </tr>
+        </thead>
+        <tbody id="invitationsBody">
+          <tr>
+            <td colspan="4" style="text-align: center; color: var(--admin-muted); padding: 3rem;">Loading invitations...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Tab 3: Subscribers Table -->
+    <div id="tabSubscribers" class="table-card" style="display: none;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>PATRON EMAIL</th>
+            <th>SOURCE</th>
+            <th>JOIN DATE</th>
+          </tr>
+        </thead>
+        <tbody id="subscribersBody">
+          <tr>
+            <td colspan="3" style="text-align: center; color: var(--admin-muted); padding: 3rem;">Loading subscribers...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <script>
+    let currentAdminKey = localStorage.getItem('kaithar_admin_key') || 'kaithar2026';
+
+    function verifyKey() {
+      const input = document.getElementById('authInput').value.trim();
+      if (!input) return;
+      currentAdminKey = input;
+      localStorage.setItem('kaithar_admin_key', input);
+      document.getElementById('authGate').style.display = 'none';
+      loadData();
+    }
+
+    function formatINR(val) {
+      return '₹' + Number(val).toLocaleString('en-IN') + ' INR';
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('tabReservations').style.display = tab === 'reservations' ? 'block' : 'none';
+      document.getElementById('tabInvitations').style.display = tab === 'invitations' ? 'block' : 'none';
+      document.getElementById('tabSubscribers').style.display = tab === 'subscribers' ? 'block' : 'none';
+    }
+
+    async function loadData() {
+      try {
+        const res = await fetch('/api/admin/reservations', {
+          headers: { 'x-admin-key': currentAdminKey }
+        });
+
+        if (res.status === 401) {
+          document.getElementById('authGate').style.display = 'flex';
+          return;
+        }
+
+        const data = await res.json();
+        if (!data.success) return;
+
+        // Populate metrics
+        const stats = data.stats;
+        document.getElementById('metricTotal').textContent = stats.totalEdition;
+        document.getElementById('metricAllocated').textContent = stats.allocatedCount;
+        document.getElementById('metricRemaining').textContent = stats.remainingCount;
+        document.getElementById('metricRevenue').textContent = formatINR(stats.totalRevenue);
+        document.getElementById('metricSubscribers').textContent = stats.subscribersCount;
+        document.getElementById('countReservations').textContent = data.reservations.length;
+
+        const pct = Math.min(100, Math.round((stats.allocatedCount / stats.totalEdition) * 100));
+        document.getElementById('metricProgress').style.width = pct + '%';
+
+        // Render reservations
+        const tbody = document.getElementById('reservationsBody');
+        if (data.reservations.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--admin-muted); padding: 3rem;">No wallet allotments recorded yet. Reservations made in checkout will appear here in real time.</td></tr>';
+        } else {
+          tbody.innerHTML = data.reservations.map(r => `
+            <tr>
+              <td><span class="edition-tag">${r.editionLabel || '#' + r.editionNumber}</span></td>
+              <td><strong>${r.certificateId}</strong></td>
+              <td>
+                <div><strong>${r.fullName}</strong></div>
+                <div style="font-size: 0.75rem; color: var(--admin-muted);">${r.email} • ${r.phone || 'No phone'}</div>
+              </td>
+              <td style="max-width: 250px; font-size: 0.8rem;">
+                ${r.address ? r.address + ', ' + r.country : r.country}
+              </td>
+              <td><strong>${formatINR(r.total)}</strong></td>
+              <td>
+                <span class="status-badge ${r.status === 'CONFIRMED' ? 'status-confirmed' : r.status === 'IN_PRODUCTION' ? 'status-production' : 'status-dispatched'}">
+                  ${r.status}
+                </span>
+              </td>
+              <td>
+                <select onchange="updateStatus('${r.id}', this.value)" style="padding: 0.35rem 0.6rem; border-radius: 4px; border: 1px solid var(--admin-border); font-size: 0.75rem;">
+                  <option value="CONFIRMED" ${r.status === 'CONFIRMED' ? 'selected' : ''}>Confirmed</option>
+                  <option value="IN_PRODUCTION" ${r.status === 'IN_PRODUCTION' ? 'selected' : ''}>In Production</option>
+                  <option value="DISPATCHED" ${r.status === 'DISPATCHED' ? 'selected' : ''}>Dispatched</option>
+                  <option value="DELIVERED" ${r.status === 'DELIVERED' ? 'selected' : ''}>Delivered</option>
+                </select>
+              </td>
+            </tr>
+          `).join('');
+        }
+
+        // Fetch subscribers and invitations
+        const subRes = await fetch('/api/admin/subscribers', {
+          headers: { 'x-admin-key': currentAdminKey }
+        });
+        const subData = await subRes.json();
+        if (subData.success) {
+          document.getElementById('countInvitations').textContent = subData.invitations.length;
+          document.getElementById('countSubscribers').textContent = subData.subscribers.length;
+
+          // Render Invitations
+          const invBody = document.getElementById('invitationsBody');
+          invBody.innerHTML = subData.invitations.length ? subData.invitations.map(inv => `
+            <tr>
+              <td><strong>${inv.fullName}</strong></td>
+              <td>${inv.email}</td>
+              <td>${inv.piece}</td>
+              <td style="font-size: 0.8rem; color: var(--admin-muted);">${new Date(inv.createdAt).toLocaleString()}</td>
+            </tr>
+          `).join('') : '<tr><td colspan="4" style="text-align: center; color: var(--admin-muted); padding: 3rem;">No invitation requests yet.</td></tr>';
+
+          // Render Subscribers
+          const sBody = document.getElementById('subscribersBody');
+          sBody.innerHTML = subData.subscribers.length ? subData.subscribers.map(s => `
+            <tr>
+              <td><strong>${s.email}</strong></td>
+              <td><span class="admin-badge" style="background: #E8E5DF; color: #111111;">${s.source}</span></td>
+              <td style="font-size: 0.8rem; color: var(--admin-muted);">${new Date(s.createdAt).toLocaleString()}</td>
+            </tr>
+          `).join('') : '<tr><td colspan="3" style="text-align: center; color: var(--admin-muted); padding: 3rem;">No subscribers yet.</td></tr>';
+        }
+
+      } catch (e) {
+        console.error('Fetch error:', e);
+      }
+    }
+
+    async function updateStatus(id, newStatus) {
+      try {
+        const res = await fetch('/api/admin/reservations/' + id + '/status', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-key': currentAdminKey
+          },
+          body: JSON.stringify({ status: newStatus })
+        });
+        if (res.ok) {
+          loadData();
+        }
+      } catch (e) {
+        console.error('Update status error:', e);
+      }
+    }
+
+    function exportCSV() {
+      window.location.href = '/api/admin/export-csv?key=' + encodeURIComponent(currentAdminKey);
+    }
+
+    // Auto-load on page ready
+    loadData();
+  </script>
+</body>
+</html>
